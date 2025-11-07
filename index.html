@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="theme-color" content="#1a2c56">
+    <meta name="description" content="Travel Schedule Editor - Mobile Responsive">
+    <title>Travel Schedule Editor</title>
+    <style>
+        /* Nohemi Font */
+        @font-face {
+            font-family: 'Nohemi';
+            src: url('fonts/Nohemi-Bold.woff2') format('woff2'),
+                 url('fonts/Nohemi-Bold.woff') format('woff');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Nohemi';
+            src: url('fonts/Nohemi-SemiBold.woff2') format('woff2'),
+                 url('fonts/Nohemi-SemiBold.woff') format('woff');
+            font-weight: 600;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        :root {
+            --primary-color: #1a2c56;
+            --primary-hover: #2a3c66;
+            --accent-color: #4a90e2;
+            --bg-light: #f5f7fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Nohemi', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* Header - Sticky Navigation */
+        .app-header {
+            width: 100%;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 12px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 15px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Nohemi', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        button:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* Main Content Area */
+        .main-content {
+            width: 100%;
+            max-width: 100vw;
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+            flex: 1;
+        }
+
+        #canvas-wrapper {
+            width: 100%;
+            max-width: 100vw;
+            display: flex;
+            justify-content: center;
+            overflow-x: auto;
+            overflow-y: visible;
+        }
+
+        #canvas-container {
+            position: relative;
+            width: 1080px;
+            height: 1350px;
+            background: white;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            border-radius: 8px;
+            overflow: visible;
+            flex-shrink: 0;
+        }
+
+        #main-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 1080px;
+            height: 1350px;
+            border-radius: 8px;
+        }
+
+        /* Editable Boxes */
+        .editable-box {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            cursor: text;
+            transition: all 0.2s ease;
+            overflow: hidden;
+        }
+
+        .editable-box:hover {
+            box-shadow: 0 0 0 2px var(--accent-color);
+            z-index: 10;
+        }
+
+        .editable-box.focused {
+            box-shadow: 0 0 0 3px var(--accent-color);
+            z-index: 20;
+        }
+
+        .editable-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            outline: none;
+            font-family: 'Nohemi', sans-serif;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .fill-box .editable-content {
+            justify-content: center;
+            text-align: center;
+            color: white;
+            font-size: 17pt;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .outline-box .editable-content {
+            justify-content: flex-start;
+            text-align: left;
+            color: #1a2c56;
+            font-size: 16pt;
+            font-weight: 600;
+            padding: 0 17px;
+            letter-spacing: 1px;
+        }
+
+        /* Loading Indicator */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(26, 44, 86, 0.95);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 12px;
+            font-size: 16px;
+            z-index: 9999;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+
+        /* ==================== MOBILE RESPONSIVE ==================== */
+
+        /* Desktop - Full Size */
+        @media screen and (min-width: 1100px) {
+            #canvas-container {
+                width: 1080px;
+                height: 1350px;
+            }
+        }
+
+        /* Large Tablets */
+        @media screen and (max-width: 1099px) {
+            #canvas-container {
+                width: calc(90vw);
+                height: calc(90vw * 1.25);
+                min-width: 972px;
+            }
+
+            .main-content {
+                padding: 12px;
+            }
+        }
+
+        /* Standard Tablets */
+        @media screen and (max-width: 900px) {
+            #canvas-container {
+                width: calc(95vw);
+                height: calc(95vw * 1.25);
+                min-width: 570px;
+            }
+
+            button {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+        }
+
+        /* Large Phones / Small Tablets */
+        @media screen and (max-width: 768px) {
+            #canvas-container {
+                width: calc(100vw - 32px);
+                height: calc((100vw - 32px) * 1.25);
+                min-width: unset;
+            }
+
+            button {
+                font-size: 13px;
+                padding: 9px 18px;
+            }
+
+            .app-header {
+                padding: 10px;
+            }
+        }
+
+        /* Standard Phones */
+        @media screen and (max-width: 640px) {
+            #canvas-container {
+                width: calc(100vw - 24px);
+                height: calc((100vw - 24px) * 1.25);
+            }
+
+            button {
+                font-size: 12px;
+                padding: 8px 16px;
+                flex: 1;
+            }
+
+            .controls {
+                gap: 6px;
+            }
+
+            .main-content {
+                padding: 12px;
+            }
+        }
+
+        /* Small Phones */
+        @media screen and (max-width: 480px) {
+            #canvas-container {
+                width: calc(100vw - 16px);
+                height: calc((100vw - 16px) * 1.25);
+            }
+
+            button {
+                font-size: 11px;
+                padding: 7px 14px;
+            }
+
+            .app-header {
+                padding: 8px;
+            }
+
+            .main-content {
+                padding: 8px;
+            }
+        }
+
+        /* Very Small Phones */
+        @media screen and (max-width: 375px) {
+            button {
+                font-size: 10px;
+                padding: 6px 12px;
+            }
+        }
+
+        /* Landscape Orientation */
+        @media screen and (orientation: landscape) and (max-height: 700px) {
+            body {
+                max-height: 100vh;
+            }
+
+            .main-content {
+                padding: 8px;
+                max-height: calc(100vh - 60px);
+            }
+
+            #canvas-wrapper {
+                max-height: calc(100vh - 70px);
+            }
+
+            button {
+                padding: 6px 14px;
+                font-size: 12px;
+            }
+
+            .app-header {
+                padding: 6px 8px;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            .app-header,
+            .controls,
+            .loading {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+            }
+
+            #canvas-container {
+                box-shadow: none;
+                width: 1080px;
+                height: 1350px;
+            }
+
+            #main-canvas {
+                width: 1080px;
+                height: 1350px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading" id="loading">Processing...</div>
+
+    <header class="app-header">
+        <div class="controls">
+            <button onclick="saveAsJPG()" aria-label="Save as JPG">💾 Save JPG</button>
+            <button onclick="clearAllData()" aria-label="Clear all data">🗑️ Clear All</button>
+            <button onclick="resetToDefault()" aria-label="Reset to default">🔄 Reset</button>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div id="canvas-wrapper">
+            <div id="canvas-container" role="application" aria-label="Travel Schedule Editor">
+                <canvas id="main-canvas"></canvas>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Initialize Canvas
+        const container = document.getElementById('canvas-container');
+        const canvas = document.getElementById('main-canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set canvas size
+        canvas.width = 1080;
+        canvas.height = 1350;
+
+        // Draw background image
+        const img = new Image();
+        img.onload = function() {
+            ctx.drawImage(img, 0, 0, 1080, 1350);
+        };
+        img.onerror = function() {
+            const gradient = ctx.createLinearGradient(0, 0, 0, 1350);
+            gradient.addColorStop(0, '#f5f5f5');
+            gradient.addColorStop(1, '#e0e0e0');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 1080, 1350);
+        };
+        img.src = 'frame.jpg';
+
+        // Layout Constants
+        const leftMargin = 88;
+        const topStart = 492;
+        const boxHeight = 54.74;
+        const boxSpacing = 3;
+        const rowSpacing = 29;
+        const borderRadius = 14;
+
+        const col1Width = 194.82;
+        const col2Width = 252.27;
+        const col3Width = 194.82;
+        const col4Width = 252.27;
+
+        const col1Left = leftMargin;
+        const col2Left = col1Left + col1Width + boxSpacing;
+        const col3Left = col2Left + col2Width + boxSpacing;
+        const col4Left = col3Left + col3Width + boxSpacing;
+
+        // Default Data
+        const defaultHeaders = ['Sector', 'Travel Date', 'Time', 'Fare'];
+        const defaultFirstRow = ['CNN-DOH', 'SEP-27,29,30', '06:35-09:05', 'SPECIAL FARE'];
+
+        let allBoxes = [];
+
+        // Initialize Boxes
+        function initializeBoxes() {
+            container.querySelectorAll('.editable-box').forEach(box => box.remove());
+            allBoxes = [];
+
+            // Create header boxes
+            const headers = [
+                { text: defaultHeaders[0], left: col1Left, width: col1Width },
+                { text: defaultHeaders[1], left: col2Left, width: col2Width },
+                { text: defaultHeaders[2], left: col3Left, width: col3Width },
+                { text: defaultHeaders[3], left: col4Left, width: col4Width }
+            ];
+
+            headers.forEach((header, index) => {
+                const box = createFillBox(header.left, topStart, header.width, boxHeight, header.text, index);
+                container.appendChild(box);
+                allBoxes.push({ element: box, type: 'fill', index: index });
+            });
+
+            // Create data rows (7 rows x 4 columns)
+            for (let row = 0; row < 7; row++) {
+                const topPosition = topStart + boxHeight + rowSpacing + (row * (boxHeight + rowSpacing));
+
+                const columns = [
+                    { left: col1Left, width: col1Width, text: row === 0 ? defaultFirstRow[0] : '' },
+                    { left: col2Left, width: col2Width, text: row === 0 ? defaultFirstRow[1] : '' },
+                    { left: col3Left, width: col3Width, text: row === 0 ? defaultFirstRow[2] : '' },
+                    { left: col4Left, width: col4Width, text: row === 0 ? defaultFirstRow[3] : '' }
+                ];
+
+                columns.forEach((col, colIndex) => {
+                    const box = createOutlineBox(col.left, topPosition, col.width, boxHeight, col.text, row, colIndex);
+                    container.appendChild(box);
+                    allBoxes.push({ element: box, type: 'outline', row: row, col: colIndex });
+                });
+            }
+        }
+
+        // Create Fill Box (Header)
+        function createFillBox(left, top, width, height, text, index) {
+            const box = document.createElement('div');
+            box.className = 'editable-box fill-box';
+            box.style.left = left + 'px';
+            box.style.top = top + 'px';
+            box.style.width = width + 'px';
+            box.style.height = height + 'px';
+            box.style.borderRadius = borderRadius + 'px';
+            box.style.background = '#1a2c56';
+
+            const content = document.createElement('div');
+            content.className = 'editable-content';
+            content.contentEditable = 'true';
+            content.textContent = text;
+
+            box.appendChild(content);
+            return box;
+        }
+
+        // Create Outline Box (Data)
+        function createOutlineBox(left, top, width, height, text, row, col) {
+            const box = document.createElement('div');
+            box.className = 'editable-box outline-box';
+            box.style.left = left + 'px';
+            box.style.top = top + 'px';
+            box.style.width = width + 'px';
+            box.style.height = height + 'px';
+            box.style.borderRadius = borderRadius + 'px';
+            box.style.border = '1.5px solid #1a2c56';
+            box.style.background = 'transparent';
+
+            const content = document.createElement('div');
+            content.className = 'editable-content';
+            content.contentEditable = 'true';
+            content.textContent = text;
+
+            box.appendChild(content);
+            return box;
+        }
+
+        // Initialize on load
+        initializeBoxes();
+
+        // Focus Handling
+        document.addEventListener('click', function(e) {
+            const box = e.target.closest('.editable-box');
+            if (box) {
+                document.querySelectorAll('.editable-box').forEach(b => b.classList.remove('focused'));
+                box.classList.add('focused');
+            }
+        });
+
+        // Auto Font Size Adjustment
+        document.addEventListener('input', function(e) {
+            if (e.target.classList.contains('editable-content')) {
+                const box = e.target.closest('.outline-box');
+                if (box) {
+                    adjustFontSize(e.target);
+                }
+            }
+        });
+
+        function adjustFontSize(element) {
+            let fontSize = 16;
+            element.style.fontSize = fontSize + 'pt';
+            const maxWidth = element.clientWidth;
+
+            while (element.scrollWidth > maxWidth && fontSize > 8) {
+                fontSize -= 0.5;
+                element.style.fontSize = fontSize + 'pt';
+            }
+        }
+
+        // Clear All Data
+        function clearAllData() {
+            if (confirm('Clear all data from outline boxes?')) {
+                document.querySelectorAll('.outline-box .editable-content').forEach(content => {
+                    content.textContent = '';
+                });
+            }
+        }
+
+        // Reset to Default
+        function resetToDefault() {
+            if (confirm('Reset all boxes to default values?')) {
+                initializeBoxes();
+            }
+        }
+
+        // Loading Functions
+        function showLoading(msg = 'Processing...') {
+            document.getElementById('loading').textContent = msg;
+            document.getElementById('loading').style.display = 'block';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        // Save as JPG
+        async function saveAsJPG() {
+            showLoading('Generating JPG...');
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            try {
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = 1080;
+                tempCanvas.height = 1350;
+                const tempCtx = tempCanvas.getContext('2d');
+
+                tempCtx.fillStyle = 'white';
+                tempCtx.fillRect(0, 0, 1080, 1350);
+
+                const img = new Image();
+                img.src = 'frame.jpg';
+
+                await new Promise((resolve) => {
+                    img.onload = () => {
+                        tempCtx.drawImage(img, 0, 0, 1080, 1350);
+                        resolve();
+                    };
+                    img.onerror = () => {
+                        const gradient = tempCtx.createLinearGradient(0, 0, 0, 1350);
+                        gradient.addColorStop(0, '#f5f5f5');
+                        gradient.addColorStop(1, '#e0e0e0');
+                        tempCtx.fillStyle = gradient;
+                        tempCtx.fillRect(0, 0, 1080, 1350);
+                        resolve();
+                    };
+                    setTimeout(resolve, 1000);
+                });
+
+                // Draw all boxes
+                document.querySelectorAll('.editable-box').forEach(box => {
+                    const left = parseFloat(box.style.left);
+                    const top = parseFloat(box.style.top);
+                    const width = parseFloat(box.style.width);
+                    const height = parseFloat(box.style.height);
+                    const content = box.querySelector('.editable-content');
+                    const text = content.textContent;
+                    const isFillBox = box.classList.contains('fill-box');
+
+                    tempCtx.save();
+                    tempCtx.beginPath();
+                    roundRect(tempCtx, left, top, width, height, borderRadius);
+
+                    if (isFillBox) {
+                        tempCtx.fillStyle = '#1a2c56';
+                        tempCtx.fill();
+                    } else {
+                        tempCtx.strokeStyle = '#1a2c56';
+                        tempCtx.lineWidth = 1.5;
+                        tempCtx.stroke();
+                    }
+
+                    const fontSize = parseFloat(window.getComputedStyle(content).fontSize);
+                    const fontWeight = isFillBox ? 'bold' : '600';
+                    tempCtx.font = `${fontWeight} ${fontSize}px 'Nohemi', sans-serif`;
+                    tempCtx.fillStyle = isFillBox ? 'white' : '#1a2c56';
+                    tempCtx.textBaseline = 'middle';
+
+                    const letterSpacing = 1;
+                    const chars = text.split('');
+
+                    if (isFillBox) {
+                        tempCtx.textAlign = 'left';
+                        let totalWidth = 0;
+                        chars.forEach((char, i) => {
+                            totalWidth += tempCtx.measureText(char).width;
+                            if (i < chars.length - 1) totalWidth += letterSpacing;
+                        });
+                        let xPos = left + (width / 2) - (totalWidth / 2);
+                        chars.forEach(char => {
+                            tempCtx.fillText(char, xPos, top + height / 2);
+                            xPos += tempCtx.measureText(char).width + letterSpacing;
+                        });
+                    } else {
+                        tempCtx.textAlign = 'left';
+                        let xPos = left + 17;
+                        chars.forEach(char => {
+                            tempCtx.fillText(char, xPos, top + height / 2);
+                            xPos += tempCtx.measureText(char).width + letterSpacing;
+                        });
+                    }
+                    tempCtx.restore();
+                });
+
+                // Download JPG
+                tempCanvas.toBlob(blob => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `travel-schedule-${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.jpg`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    hideLoading();
+                }, 'image/jpeg', 0.95);
+            } catch (error) {
+                console.error('Error:', error);
+                hideLoading();
+                alert('Error saving file. Please try again.');
+            }
+        }
+
+        // Round Rectangle Function
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+    </script>
+</body>
+</html>

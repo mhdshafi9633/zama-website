@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
@@ -10,8 +11,7 @@
         /* Nohemi Font */
         @font-face {
             font-family: 'Nohemi';
-            src: url('fonts/Nohemi-Bold.woff2') format('woff2'),
-                 url('fonts/Nohemi-Bold.woff') format('woff');
+            src: url('font/Nohemi-Bold-BF6438cc577b524.woff') format('woff');
             font-weight: 700;
             font-style: normal;
             font-display: swap;
@@ -19,8 +19,7 @@
 
         @font-face {
             font-family: 'Nohemi';
-            src: url('fonts/Nohemi-SemiBold.woff2') format('woff2'),
-                 url('fonts/Nohemi-SemiBold.woff') format('woff');
+            src: url('font/Nohemi-SemiBold-BF6438cc57db2ff.woff') format('woff');
             font-weight: 600;
             font-style: normal;
             font-display: swap;
@@ -59,7 +58,7 @@
         .app-header {
             width: 100%;
             background: white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -74,28 +73,40 @@
         }
 
         button {
-            padding: 12px 24px;
-            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            font-size: 14px;
             background: var(--primary-color);
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
             font-family: 'Nohemi', sans-serif;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            font-weight: 500;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             white-space: nowrap;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            letter-spacing: 0.3px;
+        }
+
+        button svg {
+            width: 18px;
+            height: 18px;
+            stroke-width: 2px;
         }
 
         button:hover {
             background: var(--primary-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
 
         button:active {
             transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         /* Main Content Area */
@@ -119,13 +130,14 @@
 
         #canvas-container {
             position: relative;
-            width: 1080px;
-            height: 1350px;
+            width: 1080px !important;
+            height: 1350px !important;
             background: white;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
             border-radius: 8px;
             overflow: visible;
             flex-shrink: 0;
+            transform-origin: top center;
         }
 
         #main-canvas {
@@ -159,9 +171,7 @@
 
         .editable-content {
             width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
+            /* Removed height: 100%, display: flex, align-items: center to fix caret position */
             outline: none;
             font-family: 'Nohemi', sans-serif;
             overflow: hidden;
@@ -169,7 +179,6 @@
         }
 
         .fill-box .editable-content {
-            justify-content: center;
             text-align: center;
             color: white;
             font-size: 17pt;
@@ -178,7 +187,6 @@
         }
 
         .outline-box .editable-content {
-            justify-content: flex-start;
             text-align: left;
             color: #1a2c56;
             font-size: 16pt;
@@ -200,40 +208,15 @@
             border-radius: 12px;
             font-size: 16px;
             z-index: 9999;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
         }
 
         /* ==================== MOBILE RESPONSIVE ==================== */
 
-        /* Desktop - Full Size */
-        @media screen and (min-width: 1100px) {
-            #canvas-container {
-                width: 1080px;
-                height: 1350px;
-            }
-        }
-
-        /* Large Tablets */
-        @media screen and (max-width: 1099px) {
-            #canvas-container {
-                width: calc(90vw);
-                height: calc(90vw * 1.25);
-                min-width: 972px;
-            }
-
-            .main-content {
-                padding: 12px;
-            }
-        }
+        /* Note: Canvas scaling is handled by JavaScript transforms to preserve layout integrity */
 
         /* Standard Tablets */
         @media screen and (max-width: 900px) {
-            #canvas-container {
-                width: calc(95vw);
-                height: calc(95vw * 1.25);
-                min-width: 570px;
-            }
-
             button {
                 font-size: 14px;
                 padding: 10px 20px;
@@ -242,12 +225,6 @@
 
         /* Large Phones / Small Tablets */
         @media screen and (max-width: 768px) {
-            #canvas-container {
-                width: calc(100vw - 32px);
-                height: calc((100vw - 32px) * 1.25);
-                min-width: unset;
-            }
-
             button {
                 font-size: 13px;
                 padding: 9px 18px;
@@ -260,11 +237,6 @@
 
         /* Standard Phones */
         @media screen and (max-width: 640px) {
-            #canvas-container {
-                width: calc(100vw - 24px);
-                height: calc((100vw - 24px) * 1.25);
-            }
-
             button {
                 font-size: 12px;
                 padding: 8px 16px;
@@ -282,11 +254,6 @@
 
         /* Small Phones */
         @media screen and (max-width: 480px) {
-            #canvas-container {
-                width: calc(100vw - 16px);
-                height: calc((100vw - 16px) * 1.25);
-            }
-
             button {
                 font-size: 11px;
                 padding: 7px 14px;
@@ -311,31 +278,18 @@
 
         /* Landscape Orientation */
         @media screen and (orientation: landscape) and (max-height: 700px) {
-            body {
-                max-height: 100vh;
-            }
-
-            .main-content {
-                padding: 8px;
-                max-height: calc(100vh - 60px);
-            }
-
-            #canvas-wrapper {
-                max-height: calc(100vh - 70px);
+            .app-header {
+                padding: 6px 8px;
             }
 
             button {
                 padding: 6px 14px;
-                font-size: 12px;
-            }
-
-            .app-header {
-                padding: 6px 8px;
             }
         }
 
         /* Print Styles */
         @media print {
+
             .app-header,
             .controls,
             .loading {
@@ -359,14 +313,37 @@
         }
     </style>
 </head>
+
 <body>
     <div class="loading" id="loading">Processing...</div>
 
     <header class="app-header">
         <div class="controls">
-            <button onclick="saveAsJPG()" aria-label="Save as JPG">💾 Save JPG</button>
-            <button onclick="clearAllData()" aria-label="Clear all data">🗑️ Clear All</button>
-            <button onclick="resetToDefault()" aria-label="Reset to default">🔄 Reset</button>
+            <button onclick="saveAsJPG()" aria-label="Save as JPG">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Save JPG
+            </button>
+            <button onclick="clearAllData()" aria-label="Clear all data">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+                Clear Data
+            </button>
+            <button onclick="resetToDefault()" aria-label="Reset to default">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 12"></path>
+                    <path d="M3 3v9h9"></path>
+                </svg>
+                Reset
+            </button>
         </div>
     </header>
 
@@ -390,10 +367,10 @@
 
         // Draw background image
         const img = new Image();
-        img.onload = function() {
+        img.onload = function () {
             ctx.drawImage(img, 0, 0, 1080, 1350);
         };
-        img.onerror = function() {
+        img.onerror = function () {
             const gradient = ctx.createLinearGradient(0, 0, 0, 1350);
             gradient.addColorStop(0, '#f5f5f5');
             gradient.addColorStop(1, '#e0e0e0');
@@ -509,16 +486,23 @@
         initializeBoxes();
 
         // Focus Handling
-        document.addEventListener('click', function(e) {
+        // Focus Handling
+        document.addEventListener('click', function (e) {
             const box = e.target.closest('.editable-box');
             if (box) {
                 document.querySelectorAll('.editable-box').forEach(b => b.classList.remove('focused'));
                 box.classList.add('focused');
+
+                // Ensure the content inside receives focus
+                const content = box.querySelector('.editable-content');
+                if (content) {
+                    content.focus();
+                }
             }
         });
 
         // Auto Font Size Adjustment
-        document.addEventListener('input', function(e) {
+        document.addEventListener('input', function (e) {
             if (e.target.classList.contains('editable-content')) {
                 const box = e.target.closest('.outline-box');
                 if (box) {
@@ -657,7 +641,7 @@
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = `travel-schedule-${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.jpg`;
+                    a.download = `travel-schedule-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.jpg`;
                     a.click();
                     URL.revokeObjectURL(url);
                     hideLoading();
@@ -683,6 +667,36 @@
             ctx.quadraticCurveTo(x, y, x + radius, y);
             ctx.closePath();
         }
+
+        // Scale Canvas Function for Responsiveness
+        function scaleCanvas() {
+            const container = document.getElementById('canvas-container');
+            const wrapper = document.getElementById('canvas-wrapper');
+            // Logic: fit 1080px into window width - padding
+            const padding = 20;
+            const availableWidth = Math.min(window.innerWidth - padding, 1080);
+
+            // Calculate scale
+            let scale = availableWidth / 1080;
+            if (availableWidth >= 1080) scale = 1;
+
+            // Apply scale
+            container.style.transform = `scale(${scale})`;
+
+            // Adjust wrapper height so it takes correct space in flow
+            wrapper.style.height = (1350 * scale) + 'px';
+            wrapper.style.display = 'flex';
+            wrapper.style.justifyContent = 'center';
+            wrapper.style.width = '100%';
+            wrapper.style.overflow = 'hidden'; // Hide possible scrollbars
+        }
+
+        // Listen for resize and load
+        window.addEventListener('resize', scaleCanvas);
+        window.addEventListener('DOMContentLoaded', scaleCanvas);
+        window.addEventListener('load', scaleCanvas);
+        scaleCanvas(); // Initial call
     </script>
 </body>
+
 </html>

@@ -495,95 +495,87 @@
             line-height: 1;
         }
 
-        /* ===== PROPERTIES PANEL — UAE MINIMAL ===== */
+        /* ===== PROPERTIES PANEL — ULTRA-MINIMAL UAE ===== */
         #prop-panel {
             position: fixed;
-            top: 58px;
+            top: 64px;
             right: 20px;
-            width: 270px;
-            max-height: calc(100vh - 72px);
-            background: #09111f;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px;
-            z-index: 9000;
+            width: 260px;
+            max-height: calc(100vh - 80px);
+            background: #111827 !important;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            z-index: 99999;
             overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.85);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 0, 0, 0.3);
             font-family: 'Barlow', sans-serif;
             opacity: 0;
             pointer-events: none;
-            transform: translateY(-12px) scale(0.96);
-            transition: opacity 0.24s cubic-bezier(0.4,0,0.2,1),
-                        transform 0.24s cubic-bezier(0.4,0,0.2,1);
+            transform: translateY(-8px) scale(0.98);
+            transition: opacity 0.18s ease, transform 0.18s ease;
         }
 
         #prop-panel.open {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translateY(0) scale(1);
+            opacity: 1 !important;
+            pointer-events: auto !important;
+            transform: translateY(0) scale(1) !important;
         }
 
         .pp-scroll {
-            max-height: calc(100vh - 110px);
+            max-height: calc(100vh - 120px);
             overflow-y: auto;
-            padding: 10px 10px 12px;
+            padding: 8px 10px 10px;
         }
 
-        .pp-scroll::-webkit-scrollbar { width: 2px; }
+        .pp-scroll::-webkit-scrollbar { width: 4px; }
         .pp-scroll::-webkit-scrollbar-track { background: transparent; }
         .pp-scroll::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.15);
-            border-radius: 2px;
+            background: #334155;
+            border-radius: 4px;
         }
 
-        /* Header — just label + close */
+        /* Header — Minimal UAE */
         .pp-header {
-            padding: 12px 14px 10px;
-            border-bottom: 1px solid rgba(255,255,255,0.07);
+            padding: 12px 14px;
+            border-bottom: 1px solid #1e293b;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: #09111f;
-            position: sticky;
-            top: 0;
-            z-index: 10;
+            background: #111827;
         }
 
         .pp-header-label {
             font-family: 'Barlow', sans-serif;
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            color: rgba(255,255,255,0.3);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: #94a3b8;
             text-transform: uppercase;
         }
 
         .pp-close {
-            width: 24px;
-            height: 24px;
-            border-radius: 6px;
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.1);
-            color: rgba(255,255,255,0.4);
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #94a3b8;
             cursor: pointer;
             font-size: 11px;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 0;
-            box-shadow: none;
-            transition: all 0.15s;
-            flex-shrink: 0;
+            transition: all 0.15s ease;
         }
 
         .pp-close:hover {
-            background: rgba(239,68,68,0.8);
-            border-color: transparent;
-            color: white;
-            transform: none;
-            box-shadow: none;
+            background: #ef4444;
+            border-color: #ef4444;
+            color: #ffffff;
         }
 
-        /* Gradient Cards — Minimal UAE */
+        /* Minimal Preset Cards */
         .presets-grid {
             display: flex;
             flex-direction: column;
@@ -591,106 +583,110 @@
         }
 
         .preset-card {
-            border-radius: 10px;
-            height: 48px;
+            border-radius: 8px;
+            height: 42px;
             cursor: pointer;
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
-            position: relative;
-            overflow: hidden;
+            background: #1e293b;
+            border: 1px solid #334155;
+            transition: all 0.15s ease;
             display: flex;
             align-items: center;
-            padding: 0 14px;
-            gap: 12px;
-        }
-
-        /* left-side darker overlay for text legibility */
-        .preset-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(100deg, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0.05) 60%, rgba(0,0,0,0) 100%);
-            pointer-events: none;
+            padding: 0 12px;
+            gap: 10px;
         }
 
         .preset-card:hover {
-            border-color: rgba(255,255,255,0.45);
-            transform: scale(1.015);
+            background: #334155;
+            border-color: #475569;
         }
 
         .preset-card.active {
-            border: 1.5px solid rgba(255,255,255,0.85);
-            box-shadow: 0 0 0 2px rgba(255,255,255,0.18);
+            background: #1e293b;
+            border: 1.5px solid #38bdf8;
+            box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.2);
+        }
+
+        .preset-swatch {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3), 0 2px 4px rgba(0, 0, 0, 0.3);
+            transition: transform 0.15s ease;
+        }
+
+        .preset-card:hover .preset-swatch {
+            transform: scale(1.1);
         }
 
         .preset-name {
             font-family: 'Barlow', sans-serif;
             font-size: 12px;
-            font-weight: 700;
+            font-weight: 500;
             color: #ffffff;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+            opacity: 0.2;
             letter-spacing: 0.2px;
             flex: 1;
-            position: relative;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            transition: opacity 0.15s ease;
+        }
+
+        .preset-card:hover .preset-name {
+            opacity: 0.6;
+        }
+
+        .preset-card.active .preset-name {
+            color: #ffffff;
+            opacity: 1;
+            font-weight: 600;
         }
 
         .preset-check {
             width: 18px;
             height: 18px;
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
             border-radius: 50%;
-            border: 1.5px solid rgba(255,255,255,0.4);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10px;
             color: transparent;
             flex-shrink: 0;
-            background: rgba(255,255,255,0.08);
-            position: relative;
-            transition: all 0.18s;
+            transition: all 0.15s ease;
+        }
+
+        .preset-card:hover .preset-check {
+            border-color: rgba(255, 255, 255, 0.4);
         }
 
         .preset-card.active .preset-check {
-            background: rgba(255,255,255,0.92);
-            border-color: transparent;
-            color: #0a1120;
+            border-color: #ffffff;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
         }
 
-        /* Reset */
+        /* Reset Button */
         .pp-btn-row {
             margin-top: 8px;
         }
 
         .pp-btn-reset {
             width: 100% !important;
-            background: transparent !important;
-            border: 1px solid rgba(255,255,255,0.1) !important;
-            color: rgba(255,255,255,0.35) !important;
-            font-family: 'Barlow', sans-serif !important;
+            background: #1e293b !important;
+            border: 1px solid #334155 !important;
+            color: #94a3b8 !important;
+            font-size: 12px !important;
             font-weight: 600 !important;
-            font-size: 11px !important;
-            padding: 8px !important;
+            padding: 8px 0 !important;
             border-radius: 8px !important;
             cursor: pointer !important;
-            transition: all 0.18s !important;
-            letter-spacing: 0.5px !important;
+            transition: all 0.15s ease !important;
         }
 
         .pp-btn-reset:hover {
-            background: rgba(255,255,255,0.07) !important;
-            color: rgba(255,255,255,0.7) !important;
-            border-color: rgba(255,255,255,0.2) !important;
-        }
-
-
-        }
-
-        .pp-btn-reset {
-            background: #334155;
-            color: #e2e8f0;
+            background: #334155 !important;
+            color: #ffffff !important;
         }
 
         /* Logo toggle */
@@ -1428,15 +1424,16 @@
             const grid = document.getElementById('presets-grid');
             if (!grid) return;
             grid.innerHTML = '';
+            const checkSVG = `<svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
             PRESETS.forEach((p, i) => {
                 const isActive = i === 0;
                 const shortName = p.name.replace(/^\d+\.\s*/, '');
                 const card = document.createElement('div');
                 card.className = 'preset-card' + (isActive ? ' active' : '');
-                card.style.background = `linear-gradient(135deg, ${p.gradStart}, ${p.gradEnd})`;
                 card.innerHTML = `
+                    <div class="preset-swatch" style="background: linear-gradient(135deg, ${p.gradStart}, ${p.gradEnd})"></div>
                     <div class="preset-name">${shortName}</div>
-                    <div class="preset-check">${isActive ? '\u2713' : ''}</div>
+                    <div class="preset-check">${checkSVG}</div>
                 `;
                 card.onclick = () => applyPreset(i);
                 grid.appendChild(card);
@@ -1448,8 +1445,6 @@
             activePreset = i;
             document.querySelectorAll('.preset-card').forEach((c, j) => {
                 c.classList.toggle('active', j === i);
-                const chk = c.querySelector('.preset-check');
-                if (chk) chk.textContent = (j === i) ? '✓' : '';
             });
             // CSS vars / buttons
             document.documentElement.style.setProperty('--primary-color', p.btn);
